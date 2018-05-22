@@ -37,6 +37,12 @@ List the names of trusted Wi-Fi networks (if any) that macOS/iOS clients exclude
 : " -r OnDemandEnabled_WIFI_EXCLUDE
   OnDemandEnabled_WIFI_EXCLUDE=${OnDemandEnabled_WIFI_EXCLUDE:-_null}
   EXTRA_VARS+=" OnDemandEnabled_WIFI_EXCLUDE=\"$OnDemandEnabled_WIFI_EXCLUDE\""
+
+  read -p "
+Do you want macOS/iOS clients to have separate VPNs for manual and automatic connect on demand? [y/N]: " -r OnDemandSeparateVPNs
+  OnDemandSeparateVPNs=${OnDemandSeparateVPNs:-n}
+  if [[ "$OnDemandSeparateVPNs" =~ ^(y|Y)$ ]]; then EXTRA_VARS+=" OnDemandSeparateVPNs=Y"; fi
+
 fi
 
 read -p "

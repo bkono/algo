@@ -4,6 +4,95 @@
 <dict>
     <key>PayloadContent</key>
     <array>
+{% set vpn_user_defined_name = algo_server_name %}
+{% if (algo_server_name == 'algo') or (algo_server_name == 'algo.local') %}
+    {% set vpn_user_defined_name = IP_subject_alt_name %}
+{% else %}
+{% endif %}
+{% if (OnDemandSeparateVPNs is defined and OnDemandSeparateVPNs == 'Y') %}
+        <dict>
+            <key>IKEv2</key>
+            <dict>
+                <key>AuthenticationMethod</key>
+                <string>Certificate</string>
+                <key>ChildSecurityAssociationParameters</key>
+                <dict>
+                    <key>DiffieHellmanGroup</key>
+                    <integer>19</integer>
+                    <key>EncryptionAlgorithm</key>
+                    <string>AES-128-GCM</string>
+                    <key>IntegrityAlgorithm</key>
+                    <string>SHA2-512</string>
+                    <key>LifeTimeInMinutes</key>
+                    <integer>20</integer>
+                </dict>
+                <key>DeadPeerDetectionRate</key>
+                <string>Medium</string>
+                <key>DisableMOBIKE</key>
+                <integer>0</integer>
+                <key>DisableRedirect</key>
+                <integer>1</integer>
+                <key>EnableCertificateRevocationCheck</key>
+                <integer>0</integer>
+                <key>EnablePFS</key>
+                <true/>
+                <key>IKESecurityAssociationParameters</key>
+                <dict>
+                    <key>DiffieHellmanGroup</key>
+                    <integer>19</integer>
+                    <key>EncryptionAlgorithm</key>
+                    <string>AES-128-GCM</string>
+                    <key>IntegrityAlgorithm</key>
+                    <string>SHA2-512</string>
+                    <key>LifeTimeInMinutes</key>
+                    <integer>20</integer>
+                </dict>
+                <key>LocalIdentifier</key>
+                <string>{{ item.0 }}</string>
+                <key>PayloadCertificateUUID</key>
+                <string>{{ pkcs12_PayloadCertificateUUID }}</string>
+                <key>CertificateType</key>
+                <string>ECDSA256</string>
+                <key>ServerCertificateIssuerCommonName</key>
+                <string>{{ IP_subject_alt_name }}</string>
+                <key>RemoteAddress</key>
+                <string>{{ IP_subject_alt_name }}</string>
+                <key>RemoteIdentifier</key>
+                <string>{{ IP_subject_alt_name }}</string>
+                <key>UseConfigurationAttributeInternalIPSubnet</key>
+                <integer>0</integer>
+            </dict>
+            <key>IPv4</key>
+            <dict>
+                <key>OverridePrimary</key>
+                <integer>1</integer>
+            </dict>
+            <key>PayloadDescription</key>
+            <string>Configures VPN settings</string>
+            <key>PayloadDisplayName</key>
+            <string>VPN</string>
+            <key>PayloadIdentifier</key>
+            <string>com.apple.vpn.managed.{{ Manual_VPN_PayloadIdentifier }}</string>
+            <key>PayloadType</key>
+            <string>com.apple.vpn.managed</string>
+            <key>PayloadUUID</key>
+            <string>{{ Manual_VPN_PayloadIdentifier }}</string>
+            <key>PayloadVersion</key>
+            <real>1</real>
+            <key>Proxies</key>
+            <dict>
+                <key>HTTPEnable</key>
+                <integer>0</integer>
+                <key>HTTPSEnable</key>
+                <integer>0</integer>
+            </dict>
+            <key>UserDefinedName</key>
+            <string>{{ vpn_user_defined_name }}: Manual</string>
+            <key>VPNType</key>
+            <string>IKEv2</string>
+        </dict>
+{% else %}
+{% endif %}
         <dict>
             <key>IKEv2</key>
             <dict>
@@ -134,7 +223,11 @@
                 <integer>0</integer>
             </dict>
             <key>UserDefinedName</key>
+{% if (OnDemandSeparateVPNs is defined and OnDemandSeparateVPNs == 'Y') %}
+            <string>{{ vpn_user_defined_name }}: Auto</string>
+{% else %}
             <string>{{ vpn_user_defined_name }}</string>
+{% endif %}
             <key>VPNType</key>
             <string>IKEv2</string>
         </dict>
